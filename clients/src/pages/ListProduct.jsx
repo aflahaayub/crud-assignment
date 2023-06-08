@@ -1,6 +1,8 @@
-import React, { useState, useEffect } from "react"
+import React, { useState, useEffect, useContext } from "react"
 import axios from "axios"
+//style
 import "@coreui/coreui/dist/css/coreui.min.css"
+//components
 import {
   CTable,
   CTableHead,
@@ -10,16 +12,14 @@ import {
   CTableDataCell,
   CButton,
   CContainer,
-  CModal,
-  CModalHeader,
-  CModalTitle,
-  CModalBody,
-  CModalFooter,
 } from "@coreui/react"
+
 import { Modal } from "../components/Modal"
+
 export const ListProduct = () => {
   const [products, setProducts] = useState([])
   const [visible, setVisible] = useState(false)
+  const [deletedProduk, setDeletedProduk] = useState([])
   const [data, setData] = useState("")
 
   useEffect(() => {
@@ -33,11 +33,41 @@ export const ListProduct = () => {
     setData(data)
   }
 
+  const handleClose = data => {
+    setVisible(data)
+  }
+
+  const handleDelete = data => {
+    removeProduct(data)
+    console.log(data)
+  }
+
+  const removeProduct = data => {
+    const filterProduk = products.filter(product => {
+      return product !== data
+    })
+    setProducts(filterProduk)
+
+    const deleteProduk = products.filter(product => {
+      return product === data
+    })
+    setDeletedProduk(deleteProduk)
+  }
+
+  if (deletedProduk.length !== 0) {
+    const { _id } = deletedProduk[0]
+    console.log(_id)
+    axios.delete("/list-product/" + _id).then(res => {
+      console.log(res)
+      console.log("Deleted product")
+    })
+  }
+
   return (
     <>
       <CContainer>
-        <h1 className="align-items-center">List Produk</h1>
-        {products.length === 0 && <h3>Tidak Ada Data Product</h3>}
+        <h1 className=" text-justify">List Produk</h1>
+
         <CTable className="my-3 mx-3">
           <CTableHead>
             <CTableRow>
@@ -80,8 +110,16 @@ export const ListProduct = () => {
               ))}
           </CTableBody>
         </CTable>
+        {products.length === 0 && <h4>Tidak Ada Data Produk</h4>}
       </CContainer>
-      {data && <Modal handleVisible={visible} data={data} />}
+      {visible && (
+        <Modal
+          handleClose={handleClose}
+          handleDelete={handleDelete}
+          handleVisible={visible}
+          data={data}
+        />
+      )}
     </>
   )
 }

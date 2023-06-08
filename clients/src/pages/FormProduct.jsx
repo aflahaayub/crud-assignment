@@ -21,6 +21,7 @@ export const FormProduct = () => {
   const [harga, setHarga] = useState("")
   const [uom, setUOM] = useState("")
   const [redirect, setRedirect] = useState(false)
+  const [validated, setValidated] = useState(false)
 
   useEffect(() => {
     if (!id) {
@@ -37,6 +38,7 @@ export const FormProduct = () => {
   }, [id])
   const saveProduct = async e => {
     e.preventDefault()
+
     const produkDatas = { code, nama, deskripsi, harga, uom }
 
     if (id) {
@@ -67,6 +69,7 @@ export const FormProduct = () => {
           id="codeProduct"
           label="Code Product"
           placeholder="Code Product"
+          required
         />
         {/* Name Product */}
         <CFormInput
@@ -76,6 +79,7 @@ export const FormProduct = () => {
           id="nameProduct"
           label="Nama Product"
           placeholder="Nama Product"
+          required
         />
         {/* Deskripsi Product */}
         <CFormTextarea
@@ -84,6 +88,7 @@ export const FormProduct = () => {
           rows={3}
           value={deskripsi}
           onChange={e => setDesc(e.target.value)}
+          required
         ></CFormTextarea>
         {/* Harga Product */}
         <CCol md={3}>
@@ -95,6 +100,7 @@ export const FormProduct = () => {
               type="number"
               id="hargaProduct"
               placeholder="Harga Product"
+              required
             />
           </CInputGroup>
           {/* UOM (Option) SHEET, ROLL, PCS Product */}
@@ -108,6 +114,7 @@ export const FormProduct = () => {
               { label: "ROLL", value: "ROLL" },
               { label: "PCS", value: "PCS" },
             ]}
+            required
           />
         </CCol>
         <CCol className="mt-3" xs={12}>
